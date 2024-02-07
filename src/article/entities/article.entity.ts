@@ -4,10 +4,13 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
-import { TagEntity } from '../../tag/entities/tag.entity';
+import { TagEntity } from 'src/tag/entities/tag.entity';
+import { CategoryEntity } from 'src/category/entities/category.entity';
 
 @Entity('article')
 export class ArticleEntity {
@@ -34,6 +37,14 @@ export class ArticleEntity {
     },
   })
   tags: TagEntity[];
+
+  // 一个文章一个分类
+  @ManyToOne(() => CategoryEntity, (category) => category.posts)
+  @JoinColumn({
+    name: 'category_id',
+    referencedColumnName: 'id',
+  })
+  category: CategoryEntity;
 
   @CreateDateColumn({
     type: 'timestamp',

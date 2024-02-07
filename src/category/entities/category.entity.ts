@@ -2,21 +2,21 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ArticleEntity } from 'src/article/entities/article.entity';
 
-@Entity('tag')
-export class TagEntity {
+@Entity('category')
+export class CategoryEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
-  @ManyToMany(() => ArticleEntity, (article) => article.tags)
+  @OneToMany(() => ArticleEntity, (article) => article.category)
   posts: ArticleEntity[];
 
   @CreateDateColumn({

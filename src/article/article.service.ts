@@ -1,13 +1,10 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArticleDto, UpdateArticleDto } from './dto/article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleEntity } from './entities/article.entity';
 import { Repository } from 'typeorm';
 import { TagService } from 'src/tag/tag.service';
+import { CategoryService } from 'src/category/category.service';
 
 @Injectable()
 export class ArticleService {
@@ -15,17 +12,21 @@ export class ArticleService {
     @InjectRepository(ArticleEntity)
     private readonly articleRepository: Repository<ArticleEntity>,
     private readonly tagService: TagService,
+    private readonly categoryService: CategoryService,
   ) {}
 
   async create(data: CreateArticleDto) {
     // tags传递的是标签id数组
-    const { tags } = data;
+    const { tags, category } = data;
 
     const tagList = await this.tagService.getTagByIds(tags);
+
+    const categoryObj = await this.categoryService.getCategoryById(category);
 
     const articleParams = {
       ...data,
       tags: tagList,
+      category: categoryObj,
     };
 
     await this.articleRepository.save(articleParams);
@@ -33,17 +34,25 @@ export class ArticleService {
 
   async findAll(query) {
     const { pageNum = 1, pageSize = 20 } = query;
-    const res = await this.articleRepository.findAndCount({
+
+    const [list, total] = await this.articleRepository.findAndCount({
+      relations: ['tags', 'category'],
       order: {
         created_at: 'DESC',
       },
       skip: (pageNum - 1) * pageSize,
       take: pageSize,
     });
-    const list = res[0];
-    const total = res[1];
+
     return {
-      list,
+      list: list.map((article) => {
+        const res = {
+          ...article,
+          tags: article.tags?.map((tag) => tag?.name),
+          category: article?.category?.name,
+        };
+        return res;
+      }),
       total,
     };
   }
