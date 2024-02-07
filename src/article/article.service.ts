@@ -45,14 +45,7 @@ export class ArticleService {
     });
 
     return {
-      list: list.map((article) => {
-        const res = {
-          ...article,
-          tags: article.tags?.map((tag) => tag?.name),
-          category: article?.category?.name,
-        };
-        return res;
-      }),
+      list,
       total,
     };
   }
