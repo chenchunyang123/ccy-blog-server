@@ -5,9 +5,17 @@ export class CreateArticleDto {
   readonly title: string;
 
   readonly content: string;
+
+  readonly tags?: number[];
 }
 
-export class UpdateArticleDto {}
+export class UpdateArticleDto {
+  readonly title: string;
+
+  readonly content: string;
+
+  readonly tags?: number[];
+}
 
 export interface GetAllArticleDto {
   list: any[];
