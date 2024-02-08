@@ -27,6 +27,7 @@ export class ArticleService {
       ...data,
       tags: tagList,
       category: categoryObj,
+      word_count: data.content.length,
     };
 
     await this.articleRepository.save(articleParams);

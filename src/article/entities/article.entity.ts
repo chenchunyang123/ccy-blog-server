@@ -46,6 +46,10 @@ export class ArticleEntity {
   })
   category: CategoryEntity;
 
+  // 字数
+  @Column({ type: 'int' })
+  word_count: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     comment: '创建时间',
