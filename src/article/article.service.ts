@@ -5,6 +5,10 @@ import { ArticleEntity } from './entities/article.entity';
 import { Repository } from 'typeorm';
 import { TagService } from 'src/tag/tag.service';
 import { CategoryService } from 'src/category/category.service';
+import {
+  countSpecificCharacters,
+  estimateReadingTimeInMinutes,
+} from 'src/utils/tool';
 
 @Injectable()
 export class ArticleService {
@@ -27,7 +31,8 @@ export class ArticleService {
       ...data,
       tags: tagList,
       category: categoryObj,
-      word_count: data.content.length,
+      word_count: countSpecificCharacters(data.content),
+      reading_duration_minutes: estimateReadingTimeInMinutes(data.content),
     };
 
     await this.articleRepository.save(articleParams);

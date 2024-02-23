@@ -50,6 +50,10 @@ export class ArticleEntity {
   @Column({ type: 'int' })
   word_count: number;
 
+  // 阅读时长
+  @Column({ type: 'int' })
+  reading_duration_minutes: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     comment: '创建时间',
