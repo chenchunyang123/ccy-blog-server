@@ -7,14 +7,17 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto, UpdateArticleDto } from './dto/article.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createArticleDto: CreateArticleDto) {
     return this.articleService.create(createArticleDto);
@@ -25,11 +28,13 @@ export class ArticleController {
     return this.articleService.findAll(query);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
     return this.articleService.update(+id, updateArticleDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.articleService.remove(+id);
