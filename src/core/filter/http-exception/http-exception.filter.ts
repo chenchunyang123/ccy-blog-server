@@ -30,8 +30,8 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
 
     const errorResponse = {
       data: {},
-      message: validMessage,
-      code: -1,
+      errorMessage: validMessage,
+      success: false,
     };
 
     response.status(status).json(errorResponse);
