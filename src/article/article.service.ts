@@ -23,9 +23,17 @@ export class ArticleService {
     // tags传递的是标签id数组
     const { tags, category } = data;
 
-    const tagList = await this.tagService.getTagByIds(tags);
+    let tagList;
+    // 如果传了tags，就去查找对应的标签
+    if (tags?.length) {
+      tagList = await this.tagService.getTagByIds(tags);
+    }
 
-    const categoryObj = await this.categoryService.getCategoryById(category);
+    let categoryObj;
+    // 如果传了category，就去查找对应的分类
+    if (category) {
+      categoryObj = await this.categoryService.getCategoryById(category);
+    }
 
     const articleParams = {
       ...data,

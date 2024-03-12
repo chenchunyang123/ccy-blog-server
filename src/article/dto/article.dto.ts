@@ -4,6 +4,7 @@ export class CreateArticleDto {
   @IsNotEmpty({ message: '文章标题不能为空' })
   readonly title: string;
 
+  @IsNotEmpty({ message: '文章内容不能为空' })
   readonly content: string;
 
   readonly tags?: number[];
