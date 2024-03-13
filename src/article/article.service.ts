@@ -64,6 +64,21 @@ export class ArticleService {
     };
   }
 
+  async findById(id: number) {
+    const article = await this.articleRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['tags', 'category'],
+    });
+
+    if (!article) {
+      throw new HttpException(`文章不存在`, HttpStatus.BAD_REQUEST);
+    }
+
+    return article;
+  }
+
   async update(id: number, data: UpdateArticleDto) {
     const { tags } = data;
 

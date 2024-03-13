@@ -23,9 +23,16 @@ export class ArticleController {
     return this.articleService.create(createArticleDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() query) {
     return this.articleService.findAll(query);
+  }
+
+  // @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.articleService.findById(+id);
   }
 
   @UseGuards(JwtAuthGuard)
