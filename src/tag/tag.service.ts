@@ -17,8 +17,21 @@ export class TagService {
     await this.tagRepository.save(createTagDto);
   }
 
-  async findAll() {
-    return await this.tagRepository.find();
+  async findAll(query) {
+    const { pageNum = 1, pageSize = 20 } = query;
+
+    const [list, total] = await this.tagRepository.findAndCount({
+      order: {
+        created_at: 'DESC',
+      },
+      skip: (pageNum - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return {
+      list,
+      total,
+    };
   }
 
   async update(id: number, updateTagDto: UpdateTagDto) {

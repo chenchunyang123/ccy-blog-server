@@ -7,6 +7,7 @@ import {
   Delete,
   Put,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { CreateTagDto, UpdateTagDto } from './dto/tag.dto';
@@ -23,8 +24,8 @@ export class TagController {
   }
 
   @Get()
-  findAll() {
-    return this.tagService.findAll();
+  findAll(@Query() query) {
+    return this.tagService.findAll(query);
   }
 
   @UseGuards(JwtAuthGuard)

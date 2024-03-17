@@ -14,8 +14,21 @@ export class CategoryService {
     await this.categoryRepository.save(createCategoryDto);
   }
 
-  async findAll() {
-    return await this.categoryRepository.find();
+  async findAll(query) {
+    const { pageNum = 1, pageSize = 20 } = query;
+
+    const [list, total] = await this.categoryRepository.findAndCount({
+      order: {
+        created_at: 'DESC',
+      },
+      skip: (pageNum - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return {
+      list,
+      total,
+    };
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
