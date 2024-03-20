@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
+import { Between, EntityManager, FindOperator, Like } from 'typeorm';
 import { CreateTagDto, UpdateTagDto } from './dto/tag.dto';
 import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import { TagEntity } from './entities/tag.entity';
@@ -18,9 +18,34 @@ export class TagService {
   }
 
   async findAll(query) {
-    const { pageNum = 1, pageSize = 20 } = query;
+    const {
+      pageNum = 1,
+      pageSize = 20,
+      name,
+      created_at_from,
+      created_at_to,
+    } = query;
+
+    const queryFilter: {
+      name?: FindOperator<string>;
+      created_at?: FindOperator<Date>;
+    } = {};
+
+    if (created_at_from && created_at_to) {
+      const endDate = new Date(created_at_to);
+
+      queryFilter.created_at = Between(
+        new Date(created_at_from),
+        new Date(endDate.setDate(endDate.getDate() + 1)),
+      );
+    }
+
+    if (name) {
+      queryFilter.name = Like(`%${name}%`);
+    }
 
     const [list, total] = await this.tagRepository.findAndCount({
+      where: queryFilter,
       order: {
         created_at: 'DESC',
       },

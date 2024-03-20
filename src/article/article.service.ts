@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArticleDto, UpdateArticleDto } from './dto/article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleEntity } from './entities/article.entity';
-import { Repository } from 'typeorm';
+import { Between, FindOperator, Like, Repository, Timestamp } from 'typeorm';
 import { TagService } from 'src/tag/tag.service';
 import { CategoryService } from 'src/category/category.service';
 import {
@@ -47,9 +47,34 @@ export class ArticleService {
   }
 
   async findAll(query) {
-    const { pageNum = 1, pageSize = 20 } = query;
+    const {
+      pageNum = 1,
+      pageSize = 20,
+      title,
+      created_at_from,
+      created_at_to,
+    } = query;
+
+    const queryFilter: {
+      title?: FindOperator<string>;
+      created_at?: FindOperator<Date>;
+    } = {};
+
+    if (created_at_from && created_at_to) {
+      const endDate = new Date(created_at_to);
+
+      queryFilter.created_at = Between(
+        new Date(created_at_from),
+        new Date(endDate.setDate(endDate.getDate() + 1)),
+      );
+    }
+
+    if (title) {
+      queryFilter.title = Like(`%${title}%`);
+    }
 
     const [list, total] = await this.articleRepository.findAndCount({
+      where: queryFilter,
       relations: ['tags', 'category'],
       order: {
         created_at: 'DESC',
