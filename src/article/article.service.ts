@@ -1,8 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateArticleDto, UpdateArticleDto } from './dto/article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleEntity } from './entities/article.entity';
-import { Between, FindOperator, Like, Repository, Timestamp } from 'typeorm';
+import {
+  Between,
+  FindOperator,
+  FindOptionsOrder,
+  Like,
+  Repository,
+} from 'typeorm';
 import { TagService } from 'src/tag/tag.service';
 import { CategoryService } from 'src/category/category.service';
 import {
@@ -16,6 +28,7 @@ export class ArticleService {
     @InjectRepository(ArticleEntity)
     private readonly articleRepository: Repository<ArticleEntity>,
     private readonly tagService: TagService,
+    @Inject(forwardRef(() => CategoryService))
     private readonly categoryService: CategoryService,
   ) {}
 
@@ -53,13 +66,15 @@ export class ArticleService {
       title,
       created_at_from,
       created_at_to,
+      created_at,
+      updated_at,
     } = query;
 
+    // 设置请求filter
     const queryFilter: {
       title?: FindOperator<string>;
       created_at?: FindOperator<Date>;
     } = {};
-
     if (created_at_from && created_at_to) {
       const endDate = new Date(created_at_to);
 
@@ -68,17 +83,27 @@ export class ArticleService {
         new Date(endDate.setDate(endDate.getDate() + 1)),
       );
     }
-
     if (title) {
       queryFilter.title = Like(`%${title}%`);
+    }
+
+    // 设置order
+    const order: FindOptionsOrder<ArticleEntity> = {};
+    if (created_at) {
+      order['created_at'] = created_at?.slice(0, -3);
+    }
+    if (updated_at) {
+      order['updated_at'] = updated_at?.slice(0, -3);
+    }
+    // order是空对象, 设置默认值
+    if (Object.keys(order).length === 0) {
+      order['created_at'] = 'desc';
     }
 
     const [list, total] = await this.articleRepository.findAndCount({
       where: queryFilter,
       relations: ['tags', 'category'],
-      order: {
-        created_at: 'DESC',
-      },
+      order,
       skip: (pageNum - 1) * pageSize,
       take: pageSize,
     });
@@ -140,5 +165,12 @@ export class ArticleService {
     }
 
     await this.articleRepository.remove(article);
+  }
+
+  async getArticleCountByCategoryId(id: number) {
+    return await this.articleRepository
+      .createQueryBuilder('article')
+      .where('article.category_id = :id', { id })
+      .getCount();
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { ArticleController } from './article.controller';
 import { ArticleEntity } from './entities/article.entity';
@@ -10,9 +10,10 @@ import { CategoryModule } from 'src/category/category.module';
   imports: [
     TypeOrmModule.forFeature([ArticleEntity]),
     TagModule,
-    CategoryModule,
+    forwardRef(() => CategoryModule),
   ],
   controllers: [ArticleController],
   providers: [ArticleService],
+  exports: [ArticleService],
 })
 export class ArticleModule {}
