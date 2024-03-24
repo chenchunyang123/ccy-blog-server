@@ -24,8 +24,8 @@ export class TagController {
   }
 
   @Get()
-  findAll(@Query() query) {
-    return this.tagService.findAll(query);
+  findAllByPage(@Query() query) {
+    return this.tagService.findAllByPage(query);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -38,5 +38,11 @@ export class TagController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tagService.remove(+id);
+  }
+
+  // @UseGuards(JwtAuthGuard)
+  @Get('/all')
+  getAll() {
+    return this.tagService.getAll();
   }
 }

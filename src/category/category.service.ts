@@ -23,10 +23,10 @@ export class CategoryService {
     await this.categoryRepository.save(createCategoryDto);
   }
 
-  async findAll(query) {
+  async findAllByPage(query) {
     const {
-      pageNum = 1,
-      pageSize = 20,
+      page_num = 1,
+      page_size = 20,
       name,
       created_at_from,
       created_at_to,
@@ -67,8 +67,8 @@ export class CategoryService {
     const [list, total] = await this.categoryRepository.findAndCount({
       where: queryFilter,
       order,
-      skip: (pageNum - 1) * pageSize,
-      take: pageSize,
+      skip: (page_num - 1) * page_size,
+      take: page_size,
     });
 
     const formatList = [];
@@ -88,6 +88,12 @@ export class CategoryService {
       list: formatList,
       total,
     };
+  }
+
+  async getAll() {
+    return await this.categoryRepository.find({
+      select: ['id', 'name'],
+    });
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {

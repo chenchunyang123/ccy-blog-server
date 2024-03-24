@@ -24,8 +24,8 @@ export class CategoryController {
   }
 
   @Get()
-  findAll(@Query() query) {
-    return this.categoryService.findAll(query);
+  findAllByPage(@Query() query) {
+    return this.categoryService.findAllByPage(query);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -41,5 +41,11 @@ export class CategoryController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
+  }
+
+  // @UseGuards(JwtAuthGuard)
+  @Get('/all')
+  getAll() {
+    return this.categoryService.getAll();
   }
 }

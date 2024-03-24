@@ -34,18 +34,18 @@ export class ArticleService {
 
   async create(data: CreateArticleDto) {
     // tags传递的是标签id数组
-    const { tags, category } = data;
+    const { tag_ids, category_id } = data;
 
     let tagList;
     // 如果传了tags，就去查找对应的标签
-    if (tags?.length) {
-      tagList = await this.tagService.getTagByIds(tags);
+    if (tag_ids?.length) {
+      tagList = await this.tagService.getTagByIds(tag_ids);
     }
 
     let categoryObj;
-    // 如果传了category，就去查找对应的分类
-    if (category) {
-      categoryObj = await this.categoryService.getCategoryById(category);
+    // 如果传了category_id，就去查找对应的分类
+    if (category_id) {
+      categoryObj = await this.categoryService.getCategoryById(category_id);
     }
 
     const articleParams = {
@@ -61,8 +61,8 @@ export class ArticleService {
 
   async findAll(query) {
     const {
-      pageNum = 1,
-      pageSize = 20,
+      page_num = 1,
+      page_size = 20,
       title,
       created_at_from,
       created_at_to,
@@ -104,8 +104,8 @@ export class ArticleService {
       where: queryFilter,
       relations: ['tags', 'category'],
       order,
-      skip: (pageNum - 1) * pageSize,
-      take: pageSize,
+      skip: (page_num - 1) * page_size,
+      take: page_size,
     });
 
     return {
@@ -130,7 +130,7 @@ export class ArticleService {
   }
 
   async update(id: number, data: UpdateArticleDto) {
-    const { tags } = data;
+    const { tag_ids } = data;
 
     // 通过id找到article文章
     const article = await this.articleRepository.findOne({
@@ -145,8 +145,8 @@ export class ArticleService {
     article.title = data.title;
     article.content = data.content;
 
-    if (tags) {
-      const tagList = await this.tagService.getTagByIds(tags);
+    if (tag_ids) {
+      const tagList = await this.tagService.getTagByIds(tag_ids);
       article.tags = tagList;
     }
 

@@ -7,9 +7,9 @@ export class CreateArticleDto {
   @IsNotEmpty({ message: '文章内容不能为空' })
   readonly content: string;
 
-  readonly tags?: number[];
+  readonly tag_ids?: number[];
 
-  readonly category?: number;
+  readonly category_id?: number;
 }
 
 export class UpdateArticleDto {
@@ -18,9 +18,9 @@ export class UpdateArticleDto {
 
   readonly content: string;
 
-  readonly tags?: number[];
+  readonly tag_ids?: number[];
 
-  readonly category?: number;
+  readonly category_id?: number;
 }
 
 export interface GetAllArticleDto {

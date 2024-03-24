@@ -23,10 +23,10 @@ export class TagService {
     await this.tagRepository.save(createTagDto);
   }
 
-  async findAll(query) {
+  async findAllByPage(query) {
     const {
-      pageNum = 1,
-      pageSize = 20,
+      page_num = 1,
+      page_size = 20,
       name,
       created_at_from,
       created_at_to,
@@ -67,8 +67,8 @@ export class TagService {
     const [list, total] = await this.tagRepository.findAndCount({
       where: queryFilter,
       order,
-      skip: (pageNum - 1) * pageSize,
-      take: pageSize,
+      skip: (page_num - 1) * page_size,
+      take: page_size,
     });
 
     const formatList = [];
@@ -86,6 +86,12 @@ export class TagService {
       list: formatList,
       total,
     };
+  }
+
+  async getAll() {
+    return await this.tagRepository.find({
+      select: ['id', 'name'],
+    });
   }
 
   async update(id: number, updateTagDto: UpdateTagDto) {
