@@ -23,7 +23,7 @@ export class ArticleController {
     return this.articleService.create(createArticleDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() query) {
     return this.articleService.findAll(query);
