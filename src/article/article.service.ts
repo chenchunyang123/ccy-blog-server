@@ -173,4 +173,18 @@ export class ArticleService {
       .where('article.category_id = :id', { id })
       .getCount();
   }
+
+  async getArticleProperty() {
+    // 获取文章总字数，每篇文章字数的字段名是word_count
+    const articleCount = await this.articleRepository.count();
+    const totalWordCount = await this.articleRepository
+      .createQueryBuilder('article')
+      .select('SUM(article.word_count)', 'total_word_count')
+      .getRawOne();
+
+    return {
+      article_count: articleCount,
+      total_word_count: +totalWordCount.total_word_count || 0,
+    };
+  }
 }
