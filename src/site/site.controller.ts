@@ -6,7 +6,7 @@ export class SiteController {
   constructor(private readonly siteService: SiteService) {}
 
   @Get()
-  findAllByPage() {
+  getSiteProperty() {
     return this.siteService.getSiteProperty();
   }
 }

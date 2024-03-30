@@ -29,6 +29,11 @@ export class ArticleController {
     return this.articleService.findAll(query);
   }
 
+  @Get('/by_month')
+  getArticleByMonth() {
+    return this.articleService.getArticleByMonth();
+  }
+
   // @UseGuards(JwtAuthGuard)
   @Get(':id')
   findById(@Param('id') id: string) {

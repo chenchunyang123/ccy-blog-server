@@ -21,6 +21,7 @@ import {
   countSpecificCharacters,
   estimateReadingTimeInMinutes,
 } from 'src/utils/tool';
+import { map } from 'rxjs';
 
 @Injectable()
 export class ArticleService {
@@ -186,5 +187,35 @@ export class ArticleService {
       article_count: articleCount,
       total_word_count: +totalWordCount.total_word_count || 0,
     };
+  }
+
+  async getArticleByMonth() {
+    // 返回一个数组，数组中的每个元素是一个对象，对象的key是月份加年份如：一月 2024，value是这个月的文章数量
+    const articleList = await this.articleRepository.find({
+      select: ['created_at'],
+    });
+
+    const monthMap = new Map();
+
+    articleList.forEach((article) => {
+      const month = article.created_at.getMonth() + 1;
+      const year = article.created_at.getFullYear();
+      const key = `${year}-${month}`;
+      if (monthMap.has(key)) {
+        monthMap.set(key, monthMap.get(key) + 1);
+      } else {
+        monthMap.set(key, 1);
+      }
+    });
+
+    const resList = [];
+    monthMap.forEach((value, key) => {
+      resList.push({
+        year_month: key,
+        count: value,
+      });
+    });
+
+    return resList;
   }
 }
