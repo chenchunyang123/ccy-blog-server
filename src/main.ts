@@ -11,7 +11,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
-  await app.listen(3001);
+  await app.listen(8080);
 }
 
 bootstrap();
