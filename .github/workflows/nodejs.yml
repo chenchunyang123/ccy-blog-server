@@ -22,14 +22,14 @@ jobs:
           source: './'
           target: ${{ secrets.SERVER_DIR }}
 
-      - name: SSH to server and restart application
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          script: |
-            cd ${{ secrets.SERVER_DIR }}
-            npm install
-            npm run build
-            npm run start:pm2
+      # - name: SSH to server and restart application
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     username: ${{ secrets.SERVER_USERNAME }}
+      #     password: ${{ secrets.SERVER_PASSWORD }}
+      #     script: |
+      #       cd ${{ secrets.SERVER_DIR }}
+      #       npm install
+      #       npm run build
+      #       npm run start:pm2
