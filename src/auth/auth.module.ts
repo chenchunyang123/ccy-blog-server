@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { JwtStorage } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
+import { HttpModule } from '@nestjs/axios';
 
 const jwtModule = JwtModule.register({
   secret: '1212',
@@ -14,7 +15,12 @@ const jwtModule = JwtModule.register({
 });
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity]), jwtModule, UserModule],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity]),
+    jwtModule,
+    UserModule,
+    HttpModule,
+  ],
   providers: [AuthService, LocalStorage, JwtStorage],
   controllers: [AuthController],
 })
