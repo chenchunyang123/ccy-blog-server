@@ -34,11 +34,12 @@ export class SiteService {
   }
 
   async updateSiteSetting(updateSetting: UpdateSettingDto) {
-    const { avatar_url } = updateSetting;
+    const { avatar_url, cover_url } = updateSetting;
     const res = await this.siteRepository.update(
       { id: 1 },
       {
         avatar_url,
+        cover_url,
       },
     );
     if (!res.affected) {

@@ -13,6 +13,9 @@ export class SiteEntity {
   @Column({ length: 100 })
   avatar_url: string; // 头像地址
 
+  @Column({ length: 100 })
+  cover_url: string; // 头像地址
+
   @UpdateDateColumn({
     type: 'timestamp',
     comment: '更新时间',
