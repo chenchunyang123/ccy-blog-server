@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 // 计算总字数
 export function countSpecificCharacters(input) {
   // 匹配中文字符
@@ -21,3 +23,24 @@ export function estimateReadingTimeInMinutes(input) {
   const minutes = Math.ceil(length / 200);
   return minutes;
 }
+
+export const getReqMainInfo: (req: Request) => {
+  [prop: string]: any;
+} = (req) => {
+  const { query, headers, url, method, body, connection } = req;
+
+  const xRealIp = headers['X-Real-IP'];
+  const xForwardedFor = headers['X-Forwarded-For'];
+  const { ip: cIp } = req;
+  const { remoteAddress } = connection || {};
+  const ip = xRealIp || xForwardedFor || cIp || remoteAddress;
+
+  return {
+    url,
+    host: headers.host,
+    ip,
+    method,
+    query,
+    body,
+  };
+};
