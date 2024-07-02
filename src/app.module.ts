@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,8 +15,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { SiteModule } from './site/site.module';
 import { WinstonModule } from 'nest-winston';
-import winston from 'winston';
+import * as winston from 'winston';
 import 'winston-daily-rotate-file';
+import logger from './middleware/logger.middleware';
 
 @Module({
   imports: [
@@ -57,4 +63,12 @@ import 'winston-daily-rotate-file';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  // 应用全局中间件
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(logger).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    });
+  }
+}
